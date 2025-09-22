@@ -9,6 +9,15 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
+type Repository interface {
+	CreateProduct(ctx context.Context, p *models.Product) error
+	GetProduct(ctx context.Context, id int64) (*models.Product, error)
+	GetAllProducts(ctx context.Context) ([]*models.Product, error)
+	UpdateProduct(ctx context.Context, p *models.Product) error
+	DeleteProduct(ctx context.Context, id int64) error
+	RestoreProduct(ctx context.Context, id int64) error
+}
+
 type Repo struct {
 	db *pgxpool.Pool
 }

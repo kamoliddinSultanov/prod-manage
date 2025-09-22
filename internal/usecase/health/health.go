@@ -2,6 +2,7 @@ package health
 
 import (
 	"context"
+	"fmt"
 	"prodcrud/internal/repository/health"
 )
 
@@ -14,5 +15,8 @@ func NewService(repo *health.Repo) *Service {
 }
 
 func (s *Service) Check(ctx context.Context) error {
-	return s.repo.Ping(ctx)
+	if err := s.repo.Ping(ctx); err != nil {
+		return fmt.Errorf("failed to ping db: %w", err)
+	}
+	return nil
 }

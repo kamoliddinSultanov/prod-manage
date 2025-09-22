@@ -1,18 +1,20 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net"
 	"net/http"
 	"os"
 	healthRepo "prodcrud/internal/repository/health"
-	productRepo "prodcrud/internal/repository/product"
+	"prodcrud/internal/repository/product"
 	"prodcrud/internal/rest"
 	healthHandler "prodcrud/internal/rest/handlers/health"
 	productHandler "prodcrud/internal/rest/handlers/product"
 	healthService "prodcrud/internal/usecase/health"
 	productService "prodcrud/internal/usecase/product"
 	"prodcrud/pkg/migration"
+	"time"
 
 	"prodcrud/pkg/db"
 
@@ -55,13 +57,12 @@ func execute(host, port, dsn string) error {
 		healthService.NewService,
 		healthHandler.NewHandler,
 		rest.NewServer,
-		productRepo.NewRepo,
-		productService.NewService,
 		productHandler.NewHandler,
 		func(server *rest.Server) *http.Server {
 			return &http.Server{
-				Addr:    net.JoinHostPort(host, port),
-				Handler: server,
+				Addr:              net.JoinHostPort(host, port),
+				Handler:           server,
+				ReadHeaderTimeout: 5 * time.Second,
 			}
 		},
 	}
@@ -69,15 +70,25 @@ func execute(host, port, dsn string) error {
 	container := dig.New()
 	for _, dep := range deps {
 		if err := container.Provide(dep); err != nil {
-			return err
+			return fmt.Errorf("failed to provide dependencies: %w", err)
 		}
 	}
+
+	if err := container.Provide(product.NewRepo, dig.As(new(product.Repository))); err != nil {
+		return fmt.Errorf("failed to provide dependency: %w", err)
+	}
+
+	if err := container.Provide(productService.NewService, dig.As(new(productService.ServiceInterface))); err != nil {
+		return fmt.Errorf("failed to provide dependency: %w", err)
+	}
+
 	err := container.Invoke(func(server *rest.Server) {
 		server.Init()
 	})
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to init server: %w", err)
 	}
+	//nolint:wrapcheck //dig.Invoke returns error
 	return container.Invoke(func(server *http.Server) error {
 		return server.ListenAndServe()
 	})

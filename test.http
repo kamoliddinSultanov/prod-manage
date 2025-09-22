@@ -2,9 +2,9 @@ POST http://localhost:7777/products/
 Content-Type: application/json
 
 {
-  "name": "Laptop",
-  "price": 7000000,
-  "quantity": 80,
+  "name": "samsung",
+  "price": 2000000,
+  "quantity": 180,
   "description": "some description laptop"
 }
 
