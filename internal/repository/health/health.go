@@ -2,6 +2,7 @@ package health
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 )
@@ -16,7 +17,7 @@ func NewRepo(db *pgxpool.Pool) *Repo {
 
 func (r *Repo) Ping(ctx context.Context) error {
 	if err := r.db.Ping(ctx); err != nil {
-		return err
+		return fmt.Errorf("failed to ping db: %w", err)
 	}
 	return nil
 }

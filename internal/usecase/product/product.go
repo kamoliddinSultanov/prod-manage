@@ -8,14 +8,36 @@ import (
 	"prodcrud/internal/repository/product"
 )
 
-type Service struct {
-	repo *product.Repo
+type ServiceInterface interface {
+	CreateProduct(ctx context.Context, p *models.Product) error
+	GetAllProducts(ctx context.Context) ([]*models.Product, error)
+	GetProduct(ctx context.Context, id int64) (*models.Product, error)
+	UpdateProduct(ctx context.Context, p *models.Product) error
+	DeleteProduct(ctx context.Context, id int64) error
+	RestoreProduct(ctx context.Context, id int64) error
 }
 
-func NewService(repo *product.Repo) *Service {
+type Service struct {
+	repo product.Repository
+}
+
+func NewService(repo product.Repository) ServiceInterface {
 	return &Service{repo: repo}
 }
 func (s *Service) CreateProduct(ctx context.Context, p *models.Product) error {
+	if p.Name == "" {
+		return errors.New("name is required")
+	}
+	if p.Price <= 0 {
+		return errors.New("price cannot be negative or zero")
+	}
+	if p.Quantity <= 0 {
+		return errors.New("quantity cannot be negative or zero")
+	}
+	if p.Description == "" {
+		return errors.New("description is required")
+	}
+
 	if err := s.repo.CreateProduct(ctx, p); err != nil {
 		return errors.New("failed to create product usc")
 	}
@@ -56,6 +78,23 @@ func (s *Service) UpdateProduct(ctx context.Context, p *models.Product) error {
 	if p.Quantity != 0 {
 		upd.Quantity = p.Quantity
 	}
+	if p.Description != "" {
+		upd.Description = p.Description
+	}
+
+	if p.Name == "" {
+		return errors.New("name is required")
+	}
+	if p.Price <= 0 {
+		return errors.New("price cannot be negative or zero")
+	}
+	if p.Quantity <= 0 {
+		return errors.New("quantity cannot be negative or zero")
+	}
+	if p.Description == "" {
+		return errors.New("description is required")
+	}
+
 	if err := s.repo.UpdateProduct(ctx, upd); err != nil {
 		return errors.New("failed to update product usc")
 	}
