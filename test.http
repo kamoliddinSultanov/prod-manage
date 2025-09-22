@@ -1,0 +1,38 @@
+POST http://localhost:7777/products/
+Content-Type: application/json
+
+{
+  "name": "Laptop",
+  "price": 7000000,
+  "quantity": 80,
+  "description": "some description laptop"
+}
+
+###
+
+GET http://localhost:7777/products/
+Content-Type: application/json
+
+###
+GET http://localhost:7777/products/1
+Content-Type: application/json
+
+
+###
+PUT http://localhost:7777/products/1
+Content-Type: application/json
+
+{
+  "name": "TV",
+  "price": 77000000,
+  "quantity": 150,
+  "description": "some description12345"
+}
+
+###
+DELETE http://localhost:7777/products/1
+Content-Type: application/json
+
+###
+PUT http://localhost:7777/products/1/restore
+Content-Type: application/json
