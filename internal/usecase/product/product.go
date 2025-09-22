@@ -82,16 +82,16 @@ func (s *Service) UpdateProduct(ctx context.Context, p *models.Product) error {
 		upd.Description = p.Description
 	}
 
-	if p.Name == "" {
+	if upd.Name == "" {
 		return errors.New("name is required")
 	}
-	if p.Price <= 0 {
+	if upd.Price <= 0 {
 		return errors.New("price cannot be negative or zero")
 	}
-	if p.Quantity <= 0 {
+	if upd.Quantity <= 0 {
 		return errors.New("quantity cannot be negative or zero")
 	}
-	if p.Description == "" {
+	if upd.Description == "" {
 		return errors.New("description is required")
 	}
 
