@@ -3,19 +3,22 @@ package rest
 import (
 	"net/http"
 	"prodcrud/internal/rest/handlers/health"
+	"prodcrud/internal/rest/handlers/product"
 
 	"github.com/gin-gonic/gin"
 )
 
 type Server struct {
-	mux    *gin.Engine
-	health *health.Handler
+	mux     *gin.Engine
+	health  *health.Handler
+	product *product.Handler
 }
 
-func NewServer(mux *gin.Engine, healthHandler *health.Handler) *Server {
+func NewServer(mux *gin.Engine, healthHandler *health.Handler, productHandler *product.Handler) *Server {
 	return &Server{
-		mux:    mux,
-		health: healthHandler,
+		mux:     mux,
+		health:  healthHandler,
+		product: productHandler,
 	}
 }
 
@@ -29,5 +32,12 @@ func (s *Server) Init() {
 	gr := s.mux.Group("/products")
 	{
 		gr.GET("/health", s.health.HealthCheck)
+
+		gr.GET("/", s.product.GetAllProducts)
+		gr.GET("/:id", s.product.GetProduct)
+		gr.POST("/", s.product.CreateProduct)
+		gr.PUT("/:id", s.product.UpdateProduct)
+		gr.DELETE("/:id", s.product.DeleteProduct)
+		gr.PUT("/:id/restore", s.product.RestoreProduct)
 	}
 }
