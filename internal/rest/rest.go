@@ -6,6 +6,9 @@ import (
 	"prodcrud/internal/rest/handlers/product"
 
 	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	"github.com/swaggo/gin-swagger"
+	_ "prodcrud/docs"
 )
 
 type Server struct {
@@ -25,6 +28,12 @@ func NewServer(mux *gin.Engine, healthHandler *health.Handler, productHandler *p
 func (s *Server) ServeHTTP(writer http.ResponseWriter, request *http.Request) {
 	s.mux.ServeHTTP(writer, request)
 }
+
+// @title			Product Management REST API
+// @version		1.0
+// @description	CRUD service for product management
+//
+// @BasePath		/products
 func (s *Server) Init() {
 	s.mux.Use(gin.Logger())
 	s.mux.Use(gin.Recovery())
@@ -40,4 +49,5 @@ func (s *Server) Init() {
 		gr.DELETE("/:id", s.product.DeleteProduct)
 		gr.PUT("/:id/restore", s.product.RestoreProduct)
 	}
+	s.mux.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 }
