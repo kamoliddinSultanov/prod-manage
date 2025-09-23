@@ -26,7 +26,7 @@
 
 1. Поднять Docker контейнер в директории deployment
 ```bash
-docker-compose up -d
+cd deployment && docker-compose up -d
 ```
 (P.S при желании можно поменять настройки docker-compose под свои нужды, но потом учесть их в .env!)
 
