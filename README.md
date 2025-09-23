@@ -41,3 +41,15 @@ go run cmd/app/main.go
 ```http://{host}:{port}/swagger/index.html``` 
 где host и port исходя из своей конфиграции env. Пример: 
 ```http://localhost:8080/swagger/index.html```
+
+5. End-Поинты
+```http request
+POST        /products // добавить товар
+GET         /products // получить/смотреть все товары
+GET         /products/:id // получить товар по id
+PUT         /products/:id // изменить товар
+DELETE      /products/:id // удалить/архивировать товар
+PUT         /products/:id // восстановить товар
+
+GET         /products/health // проверка работоспособности сервиса
+```
