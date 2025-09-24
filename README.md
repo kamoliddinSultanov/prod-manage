@@ -49,7 +49,7 @@ GET         /products // получить/смотреть все товары
 GET         /products/:id // получить товар по id
 PUT         /products/:id // изменить товар
 DELETE      /products/:id // удалить/архивировать товар
-PUT         /products/:id // восстановить товар
+PUT         /products/:id/restore // восстановить товар
 
 GET         /products/health // проверка работоспособности сервиса
 ```
